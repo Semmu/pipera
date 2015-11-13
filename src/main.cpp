@@ -8,12 +8,29 @@ bool running = true;
 SDL_Surface *window;
 SDL_Event e;
 
+class FunnyWindow : public Pipera::Window
+{
+public:
+    FunnyWindow(int x, int y, int w, int h) : Window(x, y, w, h)
+    {
+        return;
+    }
+
+    bool render()
+    {
+        SDL_FillRect(surface, NULL, rand());
+
+        return true;
+    }
+};
+
 int main()
 {
     srand(time(NULL));
 
     window = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_ANYFORMAT);
     Pipera::init(window);
+    Pipera::Output.addWindow(new FunnyWindow(100, 50, 100, 50));
 
     while (running)
     {
@@ -46,14 +63,13 @@ int main()
             }
         }
 
-        // to simulate a running app
-        SDL_FillRect(window, NULL, rand());
+        SDL_FillRect(window, NULL, 0);
 
         // the magic
         Pipera::render();
 
         SDL_Flip(window);
-        SDL_Delay(400);
+        SDL_Delay(10);
     }
 
     return 0;

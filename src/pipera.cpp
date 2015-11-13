@@ -13,20 +13,12 @@ namespace Pipera
         if (w == 0 || h == 0)
             return;
 
-        Uint32 rmask, gmask, bmask, amask;
-        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-            rmask = 0xff000000;
-            gmask = 0x00ff0000;
-            bmask = 0x0000ff00;
-            amask = 0x000000ff;
-        #else
-            rmask = 0x000000ff;
-            gmask = 0x0000ff00;
-            bmask = 0x00ff0000;
-            amask = 0xff000000;
-        #endif
-
-        surface = SDL_CreateRGBSurface(0, w, h, 32, rmask, gmask, bmask, amask);
+        surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+                                       Output.getSurface()->format->BitsPerPixel,
+                                       Output.getSurface()->format->Rmask,
+                                       Output.getSurface()->format->Gmask,
+                                       Output.getSurface()->format->Bmask,
+                                       Output.getSurface()->format->Amask);
     }
 
     int IDrawable::getWidth() const
@@ -44,6 +36,21 @@ namespace Pipera
         return surface;
     }
 
+    Window::Window(int x, int y, int w, int h) : IDrawable(w, h), X(x), Y(y)
+    {
+        return;
+    }
+
+    int Window::getX()
+    {
+        return X;
+    }
+
+    int Window::getY()
+    {
+        return Y;
+    }
+
 
     OutputClass::OutputClass(SDL_Surface* given_surface = NULL)
     {
@@ -56,6 +63,30 @@ namespace Pipera
             return false;
 
         surface = s;
+        return true;
+    }
+
+    bool OutputClass::render()
+    {
+        SDL_Rect r;
+        for (auto w : windows)
+        {
+            w->render();
+
+            r.x = w->getX();
+            r.y = w->getY();
+            r.w = w->getWidth();
+            r.h = w->getHeight();
+
+            SDL_BlitSurface(w->getSurface(), NULL, surface, &r);
+        }
+
+        return true;
+    }
+
+    bool OutputClass::addWindow(Window* w)
+    {
+        windows.push_back(w);
         return true;
     }
 
@@ -90,14 +121,7 @@ namespace Pipera
 
     bool render()
     {
-        SDL_Rect r;
-        r.w = 200;
-        r.h = 200;
-        r.x = 200;
-        r.y = 200;
-        SDL_FillRect(Output.getSurface(), &r, 0);
-
-        return true;
+        return Output.render();
     }
 
     /*####################################################################*\

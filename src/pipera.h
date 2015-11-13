@@ -1,3 +1,4 @@
+#include <vector>
 #if USING_SDL1
     #include <SDL/SDL.h>
 #else
@@ -23,6 +24,43 @@ namespace Pipera
         virtual int getWidth() const;
         virtual int getHeight() const;
         virtual SDL_Surface* getSurface();
+        virtual bool render() = 0;
+    };
+
+    // at least for now
+    typedef IDrawable Widget;
+
+    class IContainer : public IDrawable
+    {
+    public:
+        virtual bool attachWidget(Widget* w) = 0;
+        virtual bool detachWidget(Widget* w) = 0;
+    };
+
+    class Window : public IDrawable
+    {
+    private:
+        int X, Y;
+
+    public:
+        Window(int x = 0, int y = 0, int w = 100, int h = 100);
+
+        virtual int getX();
+        virtual int getY();
+    };
+
+    class OutputClass : public IDrawable
+    {
+    private:
+        std::vector<Window*> windows;
+
+    public:
+        OutputClass(SDL_Surface* given_surface);
+
+        virtual bool addWindow(Window* w);
+
+        bool init(SDL_Surface* s);
+        bool render();
     };
 
     /*####################################################################*\
@@ -30,14 +68,6 @@ namespace Pipera
     ##      PUBLIC VARIABLES                                              ##
     ###                                                                  ###
     \*####################################################################*/
-
-    class OutputClass : public IDrawable
-    {
-    public:
-        OutputClass(SDL_Surface* given_surface);
-
-        bool init(SDL_Surface* s);
-    };
 
     extern OutputClass Output;
 
