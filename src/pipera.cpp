@@ -39,12 +39,18 @@ namespace Pipera
 
     int IDrawable::getWidth() const
     {
-        return surface->w;
+        if (surface)
+            return surface->w;
+
+        return 0;
     }
 
     int IDrawable::getHeight() const
     {
-        return surface->h;
+        if (surface)
+            return surface->h;
+
+        return 0;
     }
 
     SDL_Surface* IDrawable::getSurface()
@@ -96,6 +102,12 @@ namespace Pipera
             return parent->getY() + Y;
 
         return Y;
+    }
+
+    AABB Widget::getAABB() const
+    {
+        return {getGlobalX(), getGlobalX() + getWidth(),
+                getGlobalY(), getGlobalY() + getHeight()};
     }
 
     bool Widget::isDirty() const
@@ -152,7 +164,20 @@ namespace Pipera
     \*   */
 
 
+    CursorClass::CursorClass() : Window(0, 0, 0, 0)
+    {
+        // nothing
+    }
 
+    void CursorClass::autosetLocation()
+    {
+        SDL_GetMouseState(&X, &Y);
+    }
+
+    bool CursorClass::render()
+    {
+        return true;
+    }
 
 
 
@@ -220,6 +245,7 @@ namespace Pipera
     \*####################################################################*/
 
     OutputClass Output;
+    CursorClass Cursor;
 
     /*####################################################################*\
     ###                                                                  ###
@@ -243,6 +269,7 @@ namespace Pipera
 
     bool render()
     {
+        Cursor.autosetLocation();
         return Output.render();
     }
 

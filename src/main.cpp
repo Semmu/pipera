@@ -42,11 +42,28 @@ public:
     }
 };
 
+class CursorWindow : public Pipera::Window
+{
+public:
+    CursorWindow(int x, int y, int w, int h) : Window(x, y, w, h)
+    {
+        return;
+    }
+
+    bool render()
+    {
+        SDL_FillRect(surface, NULL, Pipera::RGBA(rand(), rand(), rand(), 255));
+
+        return true;
+    }
+};
+
 int main()
 {
     srand(time(NULL));
 
     window = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_ANYFORMAT);
+    SDL_ShowCursor(SDL_DISABLE);
     Pipera::init(window);
 
     FunnyWindow bottomCenter(600, 100, 0, 0);
@@ -64,6 +81,9 @@ int main()
     FunnyWindow topLeft2(400, 80, 0, 0);
     Pipera::Output.addWindow(&topLeft2);
     topLeft2.alignTo(&topLeft, {0, 0, 20, 0}, {1, 0, 0, 0});
+
+    CursorWindow c(10, 10, 0, 0);
+    Pipera::Output.addWindow(&c);
 
     SDL_Surface* textureTemp = IMG_Load("grass.png");
     texture = SDL_DisplayFormat(textureTemp);
@@ -134,7 +154,7 @@ int main()
             }
         }
 
-
+        c.alignTo(&Pipera::Cursor, {0.5, 0.5, 0, 0}, {0.5, 0.5, 0, 0});
         // the magic
         Pipera::render();
 

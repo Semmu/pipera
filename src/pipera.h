@@ -33,6 +33,14 @@ namespace Pipera
 
 
 
+    struct AABB
+    {
+        int x, X,
+            y, Y;
+    };
+
+
+
     class Widget : public IDrawable
     {
     protected:
@@ -51,6 +59,8 @@ namespace Pipera
 
         int getGlobalX() const;
         int getGlobalY() const;
+
+        AABB getAABB() const;
 
         bool isDirty() const;
         void markDirty();
@@ -89,11 +99,21 @@ namespace Pipera
         } type;
 
     public:
-        Window(int w = 100, int h = 100, int x = 0, int y = 0);
+        Window(int w = 0, int h = 0, int x = 0, int y = 0);
 
         void alignTo(Window* target, PixelPicker subjectPixel = PixelPicker(), PixelPicker targetPixel = PixelPicker());
 
         friend struct PixelPicker;
+    };
+
+
+
+    class CursorClass : public Window
+    {
+    public:
+        CursorClass();
+        void autosetLocation();
+        bool render();
     };
 
 
@@ -123,7 +143,7 @@ namespace Pipera
     \*####################################################################*/
 
     extern OutputClass Output;
-
+    extern CursorClass Cursor;
 
     /*####################################################################*\
     ###                                                                  ###
