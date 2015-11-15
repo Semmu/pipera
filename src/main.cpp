@@ -14,7 +14,7 @@ SDL_Event e;
 class FunnyWindow : public Pipera::Window
 {
 public:
-    FunnyWindow(int x, int y, int w, int h) : Window(x, y, w, h)
+    FunnyWindow(int x, int y, int w = 0, int h = 0) : Window(x, y, w, h)
     {
         return;
     }
@@ -127,7 +127,14 @@ int main()
 
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    Pipera::processClick(&e);
+                    if (e.button.button == SDL_BUTTON_RIGHT)
+                    {
+                        FunnyWindow *w = new FunnyWindow(rand() % 300 + 50, rand() % 300 + 50);
+                        Pipera::Output.addWindow(w);
+                        w->alignTo(&Pipera::Cursor, {0.5, 0.5, 0, 0}, {0.5, 0.5, 0, 0});
+                    }
+                    else
+                        Pipera::processClick(&e);
                 }
 
                 default:
