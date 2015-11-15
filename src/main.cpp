@@ -59,6 +59,10 @@ int main()
     Pipera::Output.addWindow(&topRight);
     topRight.alignTo(&Pipera::Output, {1, 0, 20, -20}, {1, 0, 0, 0});
 
+    FunnyWindow topLeft2(400, 80, 0, 0);
+    Pipera::Output.addWindow(&topLeft2);
+    topLeft2.alignTo(&topLeft, {0, 0, 20, 0}, {1, 0, 0, 0});
+
     SDL_Surface* textureTemp = IMG_Load("grass.png");
     texture = SDL_DisplayFormat(textureTemp);
     SDL_FreeSurface(textureTemp);
