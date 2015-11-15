@@ -36,6 +36,8 @@ public:
 
         SDL_FillRect(surface, &r, Pipera::RGBA(rand(), rand(), rand(), 255));
 
+        dirty = false;
+
         return true;
     }
 };
@@ -91,6 +93,13 @@ int main()
                             running = false;
                         break;
 
+                        case SDLK_r:
+                            topLeft2.markDirty();
+                            topLeft.markDirty();
+                            topRight.markDirty();
+                            bottomCenter.markDirty();
+                        break;
+
                         default:
                         break;
                     }
@@ -130,7 +139,7 @@ int main()
         Pipera::render();
 
         SDL_Flip(window);
-        SDL_Delay(100);
+        SDL_Delay(1);
     }
 
     return 0;

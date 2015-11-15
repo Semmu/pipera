@@ -193,7 +193,8 @@ namespace Pipera
         SDL_Rect r;
         for (auto w : windows)
         {
-            w->render();
+            if (w->isDirty())
+                w->render();
 
             r.x = w->getX();
             r.y = w->getY();
