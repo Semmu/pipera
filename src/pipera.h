@@ -17,50 +17,89 @@ namespace Pipera
     {
     protected:
         SDL_Surface* surface;
+        bool transparent;
 
     public:
-        IDrawable(int w = 0, int h = 0);
+        IDrawable(int w = 0, int h = 0, bool t = false);
+        virtual ~IDrawable();
 
-        virtual int getWidth() const;
-        virtual int getHeight() const;
-        virtual SDL_Surface* getSurface();
+        int getWidth() const;
+        int getHeight() const;
+        SDL_Surface* getSurface();
+        bool getTransparent();
+
         virtual bool render() = 0;
     };
 
-    // at least for now
-    typedef IDrawable Widget;
 
-    class IContainer : public IDrawable
+
+    class Widget : public IDrawable
+    {
+    protected:
+        int X, Y;
+        Widget* parent;
+        bool dirty;
+
+    public:
+        Widget(int w = 0, int h = 0, int x = 0, int y = 0);
+
+        int getX() const;
+        int getY() const;
+
+        void setX(int x = 0);
+        void setY(int y = 0);
+
+        int getGlobalX() const;
+        int getGlobalY() const;
+
+        bool isDirty() const;
+        void markDirty();
+    };
+
+
+
+    class IContainer
     {
     public:
+        virtual ~IContainer();
+
         virtual bool attachWidget(Widget* w) = 0;
         virtual bool detachWidget(Widget* w) = 0;
     };
 
-    class Window : public IDrawable
+
+
+    class Window : public Widget
     {
-    private:
-        int X, Y;
+    protected:
+        enum class Type
+        {
+            NORMAL,
+
+        } type;
 
     public:
-        Window(int x = 0, int y = 0, int w = 100, int h = 100);
-
-        virtual int getX();
-        virtual int getY();
+        Window(int w = 100, int h = 100, int x = 0, int y = 0);
     };
 
-    class OutputClass : public IDrawable
+
+
+    class OutputClass : public Window
     {
     private:
         std::vector<Window*> windows;
+        SDL_Surface* targetSurface;
+        int transparentColor;
 
     public:
-        OutputClass(SDL_Surface* given_surface);
+        OutputClass();
+        bool init(SDL_Surface* target);
 
         virtual bool addWindow(Window* w);
 
-        bool init(SDL_Surface* s);
         bool render();
+
+        int getTransparentColor();
     };
 
     /*####################################################################*\
@@ -81,4 +120,6 @@ namespace Pipera
     bool init(SDL_Surface* target);
 
     bool render();
+
+    int RGBA(int r, int g, int b, int a = SDL_ALPHA_OPAQUE);
 };
