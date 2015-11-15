@@ -73,6 +73,37 @@ namespace Pipera
      \###/
       \*/
 
+     AABB::AABB(int _x, int _y) : x(_x), X(_x), y(_y), Y(_y)
+     {
+        // nothing
+     }
+
+     AABB::AABB(int _x, int _X, int _y, int _Y) : x(_x), X(_X), y(_y), Y(_Y)
+     {
+        // nothing
+     }
+
+     bool AABB::doesOverlapWith(AABB aabb)
+     {
+        // its MUCH easier to check if they definitely do not overlap
+
+        if (X < aabb.x)
+            return false;
+
+        if (aabb.X < x)
+            return false;
+
+        if (Y < aabb.y)
+            return false;
+
+        if (aabb.Y < y)
+            return false;
+
+        // if none of the previous conditions were true, they must overlap
+        return true;
+     }
+
+
     Widget::Widget(int w, int h, int x, int y) : IDrawable(w, h), X(x), Y(y), parent(NULL), dirty(true)
     {
         // nothing
@@ -213,6 +244,19 @@ namespace Pipera
         return true;
     }
 
+    bool OutputClass::processClick(SDL_Event* e)
+    {
+        AABB cursor(Cursor.getX(), Cursor.getY());
+
+        for(auto w : windows)
+        {
+            if (cursor.doesOverlapWith(w->getAABB()))
+                w->markDirty();
+        }
+
+        return true;
+    }
+
     bool OutputClass::render()
     {
         SDL_Rect r;
@@ -265,6 +309,11 @@ namespace Pipera
     bool init(SDL_Surface* target)
     {
         return Output.init(target);
+    }
+
+    bool processClick(SDL_Event* e)
+    {
+        return Output.processClick(e);
     }
 
     bool render()

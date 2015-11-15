@@ -124,6 +124,14 @@ int main()
                         break;
                     }
                 }
+
+                case SDL_MOUSEBUTTONDOWN:
+                {
+                    Pipera::processClick(&e);
+                }
+
+                default:
+                break;
             }
         }
 

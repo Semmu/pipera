@@ -37,6 +37,11 @@ namespace Pipera
     {
         int x, X,
             y, Y;
+
+        AABB(int x, int X, int y, int Y);
+        AABB(int x, int y);
+
+        bool doesOverlapWith(AABB aabb);
     };
 
 
@@ -129,7 +134,9 @@ namespace Pipera
         OutputClass();
         bool init(SDL_Surface* target);
 
-        virtual bool addWindow(Window* w);
+        bool addWindow(Window* w);
+
+        bool processClick(SDL_Event* e);
 
         bool render();
 
@@ -152,6 +159,8 @@ namespace Pipera
     \*####################################################################*/
 
     bool init(SDL_Surface* target);
+
+    bool processClick(SDL_Event* e);
 
     bool render();
 
