@@ -1,11 +1,14 @@
-#include "pipera.h"
 #include <iostream>
+#include <SDL/SDL_image.h>
+#include "pipera.h"
 
 const int WIDTH = 1500;
 const int HEIGHT = 800;
 
 bool running = true;
-SDL_Surface *window;
+SDL_Surface *window, *texture;
+int X, Y;
+double velX, velY, targetX, targetY;
 SDL_Event e;
 
 class FunnyWindow : public Pipera::Window
@@ -24,7 +27,7 @@ public:
         r.x = 0;
         r.y = 0;
 
-        SDL_FillRect(surface, &r, Pipera::RGBA(255, 0, 0, 100));
+        SDL_FillRect(surface, &r, Pipera::RGBA(255, 0, 0, rand()));
 
         r.w = surface->w - 40;
         r.h = surface->h - 40;
@@ -45,6 +48,10 @@ int main()
     Pipera::init(window);
     Pipera::Output.addWindow(new FunnyWindow(100, 50, 100, 50));
     Pipera::Output.addWindow(new FunnyWindow(500, 500, 200, 200));
+
+    SDL_Surface* textureTemp = IMG_Load("grass.png");
+    texture = SDL_DisplayFormat(textureTemp);
+    SDL_FreeSurface(textureTemp);
 
     while (running)
     {
@@ -77,13 +84,39 @@ int main()
             }
         }
 
-        SDL_FillRect(window, NULL, Pipera::RGBA(0, 50, rand() % 20 + 175));
+        if (abs(velX - targetX) < 0.3 && abs(velY - targetY) < 0.3)
+        {
+            targetX = rand() % 200 - 100;
+            targetY = rand() % 200 - 100;
+        }
+        else
+        {
+            velX += (targetX - velX) / 100;
+            velY += (targetY - velY) / 100;
+        }
+
+        X += velX / 40;
+        Y += velY / 40;
+
+        SDL_Rect r;
+        r.w = texture->w;
+        r.h = texture->h;
+        for (int x = (X % texture->w) - texture->w; x <= window->w; x+= texture->w)
+        {
+            for (int y = (Y % texture->h) - texture->h; y <= window->h; y += texture->h)
+            {
+                r.x = x;
+                r.y = y;
+                SDL_BlitSurface(texture, NULL, window, &r);
+            }
+        }
+
 
         // the magic
         Pipera::render();
 
         SDL_Flip(window);
-        SDL_Delay(100);
+        SDL_Delay(1);
     }
 
     return 0;

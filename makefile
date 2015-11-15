@@ -5,8 +5,8 @@ OBJS = src/main.cpp src/pipera.cpp
 CC = g++
 
 # compile flags
-COMPILER_FLAGS = -O -Wall -std=c++11 `sdl-config --cflags` -DUSING_SDL1
-COMPILER_FLAGS2 = -O -Wall -std=c++11 `sdl2-config --cflags`
+COMPILER_FLAGS = -O -Wall -std=c++11 `sdl-config --cflags` -lSDL_image -DUSING_SDL1
+COMPILER_FLAGS2 = -O -Wall -std=c++11 `sdl2-config --cflags` -lSDL2_image
 
 # what to link
 LINKER_FLAGS = `sdl-config --libs` -lSDL_ttf
