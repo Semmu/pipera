@@ -69,6 +69,16 @@ namespace Pipera
 
 
 
+    struct PixelPicker
+    {
+        float W, H;
+        int X, Y;
+
+        PixelPicker(float w = 0.0, float h = 0.0, int x = 0, int y = 0);
+    };
+
+
+
     class Window : public Widget
     {
     protected:
@@ -80,6 +90,10 @@ namespace Pipera
 
     public:
         Window(int w = 100, int h = 100, int x = 0, int y = 0);
+
+        void alignTo(Window* target, PixelPicker subjectPixel = PixelPicker(), PixelPicker targetPixel = PixelPicker());
+
+        friend struct PixelPicker;
     };
 
 

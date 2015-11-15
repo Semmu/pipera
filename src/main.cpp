@@ -27,14 +27,14 @@ public:
         r.x = 0;
         r.y = 0;
 
-        SDL_FillRect(surface, &r, Pipera::RGBA(255, 0, 0, rand()));
+        SDL_FillRect(surface, &r, Pipera::RGBA(255, 255, 255, 100));
 
         r.w = surface->w - 40;
         r.h = surface->h - 40;
         r.x = 20;
         r.y = 20;
 
-        SDL_FillRect(surface, &r, Pipera::RGBA(255, 0, 0, 255));
+        SDL_FillRect(surface, &r, Pipera::RGBA(rand(), rand(), rand(), 255));
 
         return true;
     }
@@ -46,8 +46,18 @@ int main()
 
     window = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_ANYFORMAT);
     Pipera::init(window);
-    Pipera::Output.addWindow(new FunnyWindow(100, 50, 100, 50));
-    Pipera::Output.addWindow(new FunnyWindow(500, 500, 200, 200));
+
+    FunnyWindow bottomCenter(600, 100, 0, 0);
+    Pipera::Output.addWindow(&bottomCenter);
+    bottomCenter.alignTo(&Pipera::Output, {0.5, 1, 0, 20}, {0.5, 1, 0, 0});
+
+    FunnyWindow topLeft(100, 100, 0, 0);
+    Pipera::Output.addWindow(&topLeft);
+    topLeft.alignTo(&Pipera::Output, {0, 0, -20, -20}, {0, 0, 0, 0});
+
+    FunnyWindow topRight(150, 250, 0, 0);
+    Pipera::Output.addWindow(&topRight);
+    topRight.alignTo(&Pipera::Output, {1, 0, 20, -20}, {1, 0, 0, 0});
 
     SDL_Surface* textureTemp = IMG_Load("grass.png");
     texture = SDL_DisplayFormat(textureTemp);
@@ -116,7 +126,7 @@ int main()
         Pipera::render();
 
         SDL_Flip(window);
-        SDL_Delay(1);
+        SDL_Delay(100);
     }
 
     return 0;

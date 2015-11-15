@@ -117,7 +117,10 @@ namespace Pipera
     \*   */
 
 
-
+    PixelPicker::PixelPicker(float w, float h, int x, int y) : W(w), H(h), X(x), Y(y)
+    {
+        // nothing
+    }
 
 
 
@@ -129,6 +132,18 @@ namespace Pipera
     Window::Window(int w, int h, int x, int y) : Widget(w, h, x, y)
     {
         return;
+    }
+
+    void Window::alignTo(Window* target, PixelPicker subjectPixel, PixelPicker targetPixel)
+    {
+        int subjextPixelGlobalX = getGlobalX() + ( getWidth() * subjectPixel.W ) + subjectPixel.X;
+        int subjextPixelGlobalY = getGlobalY() + ( getHeight() * subjectPixel.H ) + subjectPixel.Y;
+
+        int targetPixelGlobalX = target->getGlobalX() + ( target->getWidth() * targetPixel.W ) + targetPixel.X;
+        int targetPixelGlobalY = target->getGlobalY() + ( target->getHeight() * targetPixel.H ) + targetPixel.Y;
+
+        X += (targetPixelGlobalX - subjextPixelGlobalX);
+        Y += (targetPixelGlobalY - subjextPixelGlobalY);
     }
 
       /*\
