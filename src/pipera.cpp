@@ -109,9 +109,9 @@ namespace Pipera
         SDL_Surface* surface = SDL_DisplayFormat(temp);
         SDL_FreeSurface(temp);
 
+        SDL_SetColorKey(surface, SDL_SRCCOLORKEY, colorKey);
         SDL_FillRect(surface, NULL, colorKey);
 
-        SDL_SetColorKey(surface, SDL_SRCCOLORKEY, colorKey);
 
         return surface;
     }
@@ -176,11 +176,24 @@ namespace Pipera
 
 
 
+    ImageWidget::ImageWidget(SDL_Surface* image) : Widget{0, 0}
+    {
+        surface = SDL_DisplayFormat(image);
+        dirty = false;
+    }
+
+    void ImageWidget::onRender()
+    {
+        //SDL_FillRect(surface, NULL, RGB(rand(), rand(), 0));
+    }
 
 
 
 
-    Window::Window(size_t w, size_t h, bool hid) : Widget{w, h}, hidden{hid}
+
+
+
+    Window::Window(size_t w, size_t h, bool hid) : Widget{w, h}, hidden{hid}, child{NULL}
     {
         // nothing
     }
@@ -206,6 +219,20 @@ namespace Pipera
     }
 
 
+
+    OneWidgetWindow::OneWidgetWindow(Widget* ch) : Window{0, 0}
+    {
+        child = ch;
+        surface = Surface::create(child->getWidth(), child->getHeight());
+    }
+
+    void OneWidgetWindow::onRender()
+    {
+        if (child->isDirty())
+            child->render();
+
+        SDL_BlitSurface(child->getSurface(), NULL, surface, NULL);
+    }
 
 
     /*####################################################################*\
@@ -360,6 +387,9 @@ namespace Pipera
 
         for (auto window : windows)
         {
+            if (window.first->isHidden())
+                continue;
+
             window.first->render();
 
             SDL_Rect r;

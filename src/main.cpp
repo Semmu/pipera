@@ -55,6 +55,7 @@ int main()
 
     Trippy t1{800, 100}, t2{150, 150}, t3{350, 500}, t4{400, 100};
 
+
     Pipera::Canvas::addWindow(&t1);
     Pipera::Canvas::alignWindow(&t1, Pipera::Pinpointer{0, 0, 0.5, 1}, NULL, Pipera::Pinpointer{0, -20, 0.5, 1});
 
@@ -66,6 +67,12 @@ int main()
 
     Pipera::Canvas::addWindow(&t4);
     Pipera::Canvas::alignWindow(&t4, Pipera::Pinpointer{0, 0, 0, 0.5}, &t2, Pipera::Pinpointer{10, 0, 1, 0.5});
+
+    Pipera::ImageWidget textureW(texture);
+    Pipera::OneWidgetWindow oww(&textureW);
+    Pipera::Canvas::addWindow(&oww);
+
+    std::cout << Pipera::Canvas::getWindowAABB(&oww);
 
     while (running)
     {
@@ -92,7 +99,7 @@ int main()
                         break;
 
                         case SDLK_r:
-                            t1.markDirty();
+                            t1.toggle();
                             t2.markDirty();
                             t3.markDirty();
                             t4.markDirty();

@@ -84,6 +84,15 @@ namespace Pipera
     };
 
 
+    class ImageWidget : public Widget
+    {
+    public:
+        ImageWidget(SDL_Surface* image);
+
+        void onRender();
+    };
+
+
 
     class Window : public Widget
     {
@@ -99,6 +108,18 @@ namespace Pipera
         void hide();
         void show();
         void toggle();
+    };
+
+
+    class OneWidgetWindow : public Window
+    {
+    private:
+        Widget* child;
+
+    public:
+        OneWidgetWindow(Widget* child);
+
+        void onRender() final;
     };
 
 
