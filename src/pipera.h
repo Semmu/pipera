@@ -1,4 +1,6 @@
 #include <vector>
+#include <map>
+
 #if USING_SDL1
     #include <SDL/SDL.h>
 #else
@@ -7,20 +9,23 @@
 
 namespace Pipera
 {
-    struct Pinpointer
+    struct Position
     {
-        double width, height;
         int X, Y;
 
-        Pinpointer(double width = 0.5, double height = 0.5, int x = 0, int y = 0);
+        Position(int x, int y);
     };
 
-
-
-    struct AABB
+    struct Pinpointer : Position
     {
-        int x, X,
-            y, Y;
+        double width, height;
+
+        Pinpointer(int x = 0, int y = 0, double width = 0.5, double height = 0.5);
+    };
+
+    struct AABB : Position
+    {
+        int x, y;
 
         AABB(int x, int y);
         AABB(int x, int X, int y, int Y);
@@ -67,7 +72,7 @@ namespace Pipera
         virtual void onResize();
 
         void render();
-        virtual void onRender();
+        virtual void onRender() = 0;
 
         void markDirty();
         bool isDirty() const;
@@ -93,13 +98,34 @@ namespace Pipera
         void toggle();
     };
 
+
+
+    class CanvasClass : public Widget
+    {
+    private:
+        std::map<Window*, Position> windows;
+        SDL_Surface* target;
+
+    public:
+        CanvasClass();
+
+        SDL_Surface* getTargetSurface();
+
+        void init(SDL_Surface* target);
+
+        void addWindow(Window* window, Position position);
+        void alignWindow(Window* window, Pinpointer window_pixel, Window* target, Pinpointer target_pixel);
+
+        void onRender();
+    };
+
     /*####################################################################*\
     ###                                                                  ###
     ##      PUBLIC TYPE DEFINITIONS                                       ##
     ###                                                                  ###
     \*####################################################################*/
 
-
+    extern CanvasClass Canvas;
 
 
 

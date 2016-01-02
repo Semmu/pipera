@@ -14,12 +14,12 @@ SDL_Event e;
 class FunnyWindow : public Pipera::Window
 {
 public:
-    FunnyWindow(int x, int y, int w = 0, int h = 0) : Window(x, y, w, h)
+    FunnyWindow(size_t w, size_t h) : Window(w, h)
     {
-        return;
+        // nothing
     }
 
-    bool render()
+    void onRender()
     {
         SDL_Rect r;
         r.w = surface->w;
@@ -35,26 +35,6 @@ public:
         r.y = 20;
 
         SDL_FillRect(surface, &r, Pipera::RGBA(rand(), rand(), rand(), 255));
-
-        dirty = false;
-
-        return true;
-    }
-};
-
-class CursorWindow : public Pipera::Window
-{
-public:
-    CursorWindow(int x, int y, int w, int h) : Window(x, y, w, h)
-    {
-        return;
-    }
-
-    bool render()
-    {
-        SDL_FillRect(surface, NULL, Pipera::RGBA(rand(), rand(), rand(), 255));
-
-        return true;
     }
 };
 
@@ -66,24 +46,9 @@ int main()
     SDL_ShowCursor(SDL_DISABLE);
     Pipera::init(window);
 
-    FunnyWindow bottomCenter(600, 100, 0, 0);
-    Pipera::Output.addWindow(&bottomCenter);
-    bottomCenter.alignTo(&Pipera::Output, {0.5, 1, 0, 20}, {0.5, 1, 0, 0});
+    FunnyWindow bottomCenter(600, 100);
+    Pipera::Canvas.addWindow(&bottomCenter, {100, 100});
 
-    FunnyWindow topLeft(100, 100, 0, 0);
-    Pipera::Output.addWindow(&topLeft);
-    topLeft.alignTo(&Pipera::Output, {0, 0, -20, -20}, {0, 0, 0, 0});
-
-    FunnyWindow topRight(150, 250, 0, 0);
-    Pipera::Output.addWindow(&topRight);
-    topRight.alignTo(&Pipera::Output, {1, 0, 20, -20}, {1, 0, 0, 0});
-
-    FunnyWindow topLeft2(400, 80, 0, 0);
-    Pipera::Output.addWindow(&topLeft2);
-    topLeft2.alignTo(&topLeft, {0, 0, 20, 0}, {1, 0, 0, 0});
-
-    CursorWindow c(10, 10, 0, 0);
-    Pipera::Output.addWindow(&c);
 
     SDL_Surface* textureTemp = IMG_Load("grass.png");
     texture = SDL_DisplayFormat(textureTemp);
@@ -114,10 +79,6 @@ int main()
                         break;
 
                         case SDLK_r:
-                            topLeft2.markDirty();
-                            topLeft.markDirty();
-                            topRight.markDirty();
-                            bottomCenter.markDirty();
                         break;
 
                         default:
@@ -129,12 +90,7 @@ int main()
                 {
                     if (e.button.button == SDL_BUTTON_RIGHT)
                     {
-                        FunnyWindow *w = new FunnyWindow(rand() % 300 + 50, rand() % 300 + 50);
-                        Pipera::Output.addWindow(w);
-                        w->alignTo(&Pipera::Cursor, {0.5, 0.5, 0, 0}, {0.5, 0.5, 0, 0});
                     }
-                    else
-                        Pipera::processClick(&e);
                 }
 
                 default:
@@ -169,7 +125,6 @@ int main()
             }
         }
 
-        c.alignTo(&Pipera::Cursor, {0.5, 0.5, 0, 0}, {0.5, 0.5, 0, 0});
         // the magic
         Pipera::render();
 
