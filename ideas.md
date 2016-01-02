@@ -18,6 +18,7 @@
 - widget globális AABB lekérdezés? ez para, mert az összes szülőjétől függ, főleg, ha még scrollable containerben is van...
 - window typeok???
 - cursorclass? mármint amihez lehez igazítani n shit
+- force render()? minden widget mindenképp újrarajzolódik?
 
 # Milestones
 

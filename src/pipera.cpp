@@ -9,6 +9,8 @@ namespace Pipera
         Uint32 colorKey;
         SDL_Surface* target;
         SDL_Surface* canvas;
+
+        std::map<Window*, Position> windows;
     }
 
 
@@ -34,6 +36,16 @@ namespace Pipera
 
         if (y > Y)
             std::swap(y, Y);
+    }
+
+    int AABB::getWidth() const
+    {
+        return X - x;
+    }
+
+    int AABB::getHeight() const
+    {
+        return Y - y;
     }
 
     bool AABB::collides(AABB other) const
@@ -134,10 +146,10 @@ namespace Pipera
 
     void Widget::render()
     {
-        /*if (!dirty)
-            return;*/
+        if (!dirty)
+            return;
 
-        SDL_FillRect(surface, NULL, RGB(rand(), rand(), rand()));
+        SDL_FillRect(surface, NULL, colorKey);
 
         onRender();
         dirty = false;
@@ -277,6 +289,54 @@ namespace Pipera
     ###                                                                  ###
     \*####################################################################*/
 
+    void Canvas::addWindow(Window* w)
+    {
+        windows.insert(std::make_pair(w, Position{0, 0}));
+    }
+
+    AABB Canvas::getAABB()
+    {
+        return AABB{0, target->w, 0, target->h};
+    }
+
+    AABB Canvas::getWindowAABB(Window *w)
+    {
+        // window not added to canvas, TODO throw exception
+        if (windows.find(w) == windows.end())
+            return AABB{0, 0, 0, 0};
+
+        Window* win = windows.find(w)->first;
+        Position pos = windows.find(w)->second;
+
+        return AABB{pos.X, int(win->getWidth()) + pos.X, pos.Y, int(win->getHeight()) + pos.Y};
+    }
+
+    void Canvas::alignWindow(Window* w, Pinpointer wp, Window* t, Pinpointer tp)
+    {
+        // TODO throw exception if *w is not in windows
+        if (windows.find(w) == windows.end())
+            return;
+
+        AABB waabb = Canvas::getWindowAABB(w), taabb{0, 0};
+
+        if (t == NULL)
+            taabb = Canvas::getAABB();
+        else
+            taabb = Canvas::getWindowAABB(t);
+
+        int wpx = waabb.x + wp.X + (waabb.getWidth() * wp.width);
+        int wpy = waabb.y + wp.Y + (waabb.getHeight() * wp.height);
+
+        int tpx = taabb.x + tp.X + (taabb.getWidth() * tp.width);
+        int tpy = taabb.y + tp.Y + (taabb.getHeight() * tp.height);
+
+        int dx = tpx - wpx;
+        int dy = tpy - wpy;
+
+        windows.find(w)->second.X += dx;
+        windows.find(w)->second.Y += dy;
+    }
+
     void init(SDL_Surface* t)
     {
         if (canvas)
@@ -298,14 +358,18 @@ namespace Pipera
     {
         SDL_FillRect(canvas, NULL, colorKey);
 
-        SDL_Rect r;
-        r.w = 100 + rand() % 100;
-        r.h = 100 + rand() % 100;
+        for (auto window : windows)
+        {
+            window.first->render();
 
-        r.x = rand() % (target->w - r.w);
-        r.y = rand() % (target->h - r.h);
+            SDL_Rect r;
+            r.w = window.first->getWidth();
+            r.h = window.first->getHeight();
+            r.x = window.second.X;
+            r.y = window.second.Y;
 
-        SDL_FillRect(canvas, &r, RGB(255, 255, 255));
+            SDL_BlitSurface(window.first->getSurface(), NULL, canvas, &r);
+        }
 
         SDL_BlitSurface(canvas, NULL, target, NULL);
     }

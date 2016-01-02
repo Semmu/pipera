@@ -30,6 +30,9 @@ namespace Pipera
         AABB(int x, int y);
         AABB(int x, int X, int y, int Y);
 
+        int getWidth() const;
+        int getHeight() const;
+
         bool collides(AABB other) const;
     };
 
@@ -123,7 +126,11 @@ namespace Pipera
 
     namespace Canvas
     {
-        void addWindow(Window* window, Position position);
+        void addWindow(Window* window);
+
+        AABB getAABB();
+        AABB getWindowAABB(Window* w);
+
         void alignWindow(Window* window, Pinpointer window_pixel, Window* target, Pinpointer target_pixel);
     }
 

@@ -12,6 +12,36 @@ double X, Y;
 double velX, velY, targetX, targetY;
 SDL_Event e;
 
+std::ostream& operator<<(std::ostream& os, Pipera::AABB aabb)
+{
+    os << "AABB( x: " << aabb.x << " - " << aabb.X << ", y: " << aabb.y << " - " << aabb.Y << " )";
+    return os;
+}
+
+class Trippy : public Pipera::Window
+{
+public:
+    Trippy(size_t w, size_t h) : Window(w, h) {};
+
+    void onRender()
+    {
+        SDL_Rect arr;
+
+        arr.x = 0;
+        arr.y = 0;
+        arr.w = getWidth();
+        arr.h = getHeight();
+        SDL_FillRect(surface, &arr, Pipera::RGB(rand(), rand(), rand()));
+
+        arr.x = 10;
+        arr.y = 10;
+        arr.w = getWidth() - 20;
+        arr.h = getHeight() - 20;
+        SDL_FillRect(surface, &arr, Pipera::getColorKey());
+
+    }
+};
+
 int main()
 {
     srand(time(NULL));
@@ -19,26 +49,26 @@ int main()
     window = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_ANYFORMAT);
     Pipera::init(window);
 
-    SDL_Surface* shit = Pipera::Surface::create(300, 180);
-
     SDL_Surface* textureTemp = IMG_Load("grass.png");
     texture = SDL_DisplayFormat(textureTemp);
     SDL_FreeSurface(textureTemp);
 
-    std::cout << std::hex << Pipera::RGB(127, 127, 127) << std::endl <<
-                 SDL_MapRGB(window->format, 127, 127, 127) << std::endl <<
-                 Pipera::getColorKey();
+    Trippy t1{800, 100}, t2{150, 150}, t3{350, 500}, t4{400, 100};
 
+    Pipera::Canvas::addWindow(&t1);
+    Pipera::Canvas::alignWindow(&t1, Pipera::Pinpointer{0, 0, 0.5, 1}, NULL, Pipera::Pinpointer{0, -20, 0.5, 1});
+
+    Pipera::Canvas::addWindow(&t2);
+    Pipera::Canvas::alignWindow(&t2, Pipera::Pinpointer{0, 0, 0, 0}, NULL, Pipera::Pinpointer{20, 20, 0, 0});
+
+    Pipera::Canvas::addWindow(&t3);
+    Pipera::Canvas::alignWindow(&t3, Pipera::Pinpointer{0, 0, 1, 0}, NULL, Pipera::Pinpointer{-20, 20, 1, 0});
+
+    Pipera::Canvas::addWindow(&t4);
+    Pipera::Canvas::alignWindow(&t4, Pipera::Pinpointer{0, 0, 0, 0.5}, &t2, Pipera::Pinpointer{10, 0, 1, 0.5});
 
     while (running)
     {
-        SDL_Rect arr;
-        arr.x = 10;
-        arr.y = 10;
-        arr.w = 280;
-        arr.h = 160;
-        SDL_FillRect(shit, &arr, Pipera::RGB(rand(), rand(), rand()));
-
         while(SDL_PollEvent(&e) != 0)
         {
             switch (e.type)
@@ -62,6 +92,10 @@ int main()
                         break;
 
                         case SDLK_r:
+                            t1.markDirty();
+                            t2.markDirty();
+                            t3.markDirty();
+                            t4.markDirty();
                         break;
 
                         default:
@@ -110,12 +144,6 @@ int main()
 
         // the magic
         Pipera::render();
-
-        r.x = 0;
-        r.y = 0;
-        r.w = 300;
-        r.h = 180;
-        SDL_BlitSurface(shit, NULL, window, &r);
 
         SDL_Flip(window);
         SDL_Delay(1);
