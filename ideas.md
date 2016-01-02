@@ -13,6 +13,30 @@
 - az output végül egy AbsoluteContainer? azon meg window-k? vagy szimpla widget-ek? mivel több egy window a widget-nél? (pl hidden bit)
 - hotkey support?
 
+
+### render pipeline
+
+- belépési pont: az Output-on hívódik meg (ami ugye egy AbsoluteContainer)
+- ha nem dirty, akkor kész, csak blit. de ha nem:
+- bejár child widget-ek, ami dirty, arra doRender()
+- blit mindent megfelelő helyre
+- kész?
+
+
+### lazy rendering
+
+- minden tartalmaz saját surface-t
+- a render() arra rajzol
+- a doRender() meghívja a render(), ha kell (mert dirty), és kiállítja, hogy dirty
+
+
+### mark dirty
+
+- jelzi, hogy újrarender kell (kb mint a glutPostRedisplay)
+- beállítja a dirty bitet
+- ha van parent, akkor azon is -> így felfele a gyökérig (output) minden dirty lesz, aminek tényleg újrarender kell
+
+
 # Konténerek
 
 A widgetek rendezésére meg a normális UI kialakításához kell sok különböző fajta konténer.
