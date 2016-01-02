@@ -160,6 +160,36 @@ namespace Pipera
     \*   */
 
 
+    PaddingContainer::PaddingContainer(Widget* c, int t, int r, int b, int l) :
+        Widget( c->getWidth() + ( l ? l : ( r ? r : t) ) + ( r ? r : t) ,
+                c->getHeight() + t + ( b ? b : t) )
+    {
+        // nothing
+    }
+
+    bool PaddingContainer::render()
+    {
+        SDL_Rect r;
+        r.w = surface->w;
+        r.h = surface->h;
+        r.x = 0;
+        r.y = 0;
+
+        SDL_FillRect(surface, &r, Pipera::RGBA(0, 0, 0, 255));
+
+        r.w = child->getSurface()->w;
+        r.h = child->getSurface()->h;
+        r.x = left;
+        r.y = top;
+
+        SDL_BlitSurface(child->getSurface(), NULL, surface, &r);
+
+        dirty = false;
+
+        return true;
+    }
+
+
     PixelPicker::PixelPicker(float w, float h, int x, int y) : W(w), H(h), X(x), Y(y)
     {
         // nothing

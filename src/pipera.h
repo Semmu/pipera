@@ -73,6 +73,20 @@ namespace Pipera
 
 
 
+    class PaddingContainer : public Widget
+    {
+    protected:
+        int top, right, bottom, left;
+        Widget* child;
+
+    public:
+        PaddingContainer(Widget* child, int top, int right = 0, int bottom = 0, int left = 0);
+
+        bool render();
+    };
+
+
+
     class IContainer
     {
     public:
