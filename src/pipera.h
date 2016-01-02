@@ -83,6 +83,18 @@ namespace Pipera
         AABB getAABB() const;
     };
 
+    class PaddingContainer : public Widget
+    {
+    private:
+        size_t top, right, bottom, left;
+        Widget* child;
+
+    public:
+        PaddingContainer(Widget* widget, size_t top, size_t right = 0, size_t bottom = 0, size_t left = 0);
+
+        void onRender() final;
+    };
+
 
     class ImageWidget : public Widget
     {

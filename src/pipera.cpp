@@ -175,11 +175,37 @@ namespace Pipera
     }
 
 
+    PaddingContainer::PaddingContainer(Widget* w, size_t t, size_t r, size_t b, size_t l) :
+        Widget{(l ? l : ( r ? r : t)) + w->getWidth() + (r ? r : t),
+                t + w->getHeight() + (b ? b : t)}, top{t}, right{r}, bottom{b}, left{l}, child{w}
+    {
+        // TODO set child's parent!!!
+    }
+
+    void PaddingContainer::onRender()
+    {
+        if (child->isDirty())
+            child->render();
+
+        // FIXME what if the child changed its size?
+
+        SDL_FillRect(surface, NULL, colorKey);
+
+        SDL_Rect r;
+        r.x = left;
+        r.y = top;
+        r.w = child->getWidth();
+        r.h = child->getHeight();
+
+        SDL_BlitSurface(child->getSurface(), NULL, surface, &r);
+    }
+
+
 
     ImageWidget::ImageWidget(SDL_Surface* image) : Widget{0, 0}
     {
         surface = SDL_DisplayFormat(image);
-        dirty = false;
+        dirty = false; // FIXME this is not safe, because marking the widget dirty will erase the image
     }
 
     void ImageWidget::onRender()
@@ -222,6 +248,8 @@ namespace Pipera
 
     OneWidgetWindow::OneWidgetWindow(Widget* ch) : Window{0, 0}
     {
+        // TODO set child's parent!!!
+
         child = ch;
         surface = Surface::create(child->getWidth(), child->getHeight());
     }

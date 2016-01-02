@@ -69,8 +69,10 @@ int main()
     Pipera::Canvas::alignWindow(&t4, Pipera::Pinpointer{0, 0, 0, 0.5}, &t2, Pipera::Pinpointer{10, 0, 1, 0.5});
 
     Pipera::ImageWidget textureW(texture);
-    Pipera::OneWidgetWindow oww(&textureW);
+    Pipera::PaddingContainer pc(&textureW, 5, 10, 15, 20);
+    Pipera::OneWidgetWindow oww(&pc);
     Pipera::Canvas::addWindow(&oww);
+    //Pipera::Canvas::alignWindow(&oww, Pipera::Pinpointer{0, 0, 0.5, 0.5}, &t2, Pipera::Pinpointer{0, 0, 0.5, 0.5});
 
     std::cout << Pipera::Canvas::getWindowAABB(&oww);
 
