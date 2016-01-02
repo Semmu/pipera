@@ -12,6 +12,7 @@
 - textinput inputbevitel?????????
 - az output végül egy AbsoluteContainer? azon meg window-k? vagy szimpla widget-ek? mivel több egy window a widget-nél? (pl hidden bit)
 - hotkey support?
+- témázhatóság? stílusinformáció elválasztása? hogy ne legyen hardcode-olt minden kinézet
 
 
 ### render pipeline
