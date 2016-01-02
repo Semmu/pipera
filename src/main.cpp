@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <SDL/SDL_image.h>
 #include "pipera.h"
 
@@ -11,51 +12,33 @@ double X, Y;
 double velX, velY, targetX, targetY;
 SDL_Event e;
 
-class FunnyWindow : public Pipera::Window
-{
-public:
-    FunnyWindow(size_t w, size_t h) : Window(w, h)
-    {
-        // nothing
-    }
-
-    void onRender()
-    {
-        SDL_Rect r;
-        r.w = surface->w;
-        r.h = surface->h;
-        r.x = 0;
-        r.y = 0;
-
-        SDL_FillRect(surface, &r, Pipera::RGBA(255, 255, 255, 100));
-
-        r.w = surface->w - 40;
-        r.h = surface->h - 40;
-        r.x = 20;
-        r.y = 20;
-
-        SDL_FillRect(surface, &r, Pipera::RGBA(rand(), rand(), rand(), 255));
-    }
-};
-
 int main()
 {
     srand(time(NULL));
 
     window = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_ANYFORMAT);
-    SDL_ShowCursor(SDL_DISABLE);
     Pipera::init(window);
 
-    FunnyWindow bottomCenter(600, 100);
-    Pipera::Canvas.addWindow(&bottomCenter, {100, 100});
-
+    SDL_Surface* shit = Pipera::Surface::create(300, 180);
 
     SDL_Surface* textureTemp = IMG_Load("grass.png");
     texture = SDL_DisplayFormat(textureTemp);
     SDL_FreeSurface(textureTemp);
 
+    std::cout << std::hex << Pipera::RGB(127, 127, 127) << std::endl <<
+                 SDL_MapRGB(window->format, 127, 127, 127) << std::endl <<
+                 Pipera::getColorKey();
+
+
     while (running)
     {
+        SDL_Rect arr;
+        arr.x = 10;
+        arr.y = 10;
+        arr.w = 280;
+        arr.h = 160;
+        SDL_FillRect(shit, &arr, Pipera::RGB(rand(), rand(), rand()));
+
         while(SDL_PollEvent(&e) != 0)
         {
             switch (e.type)
@@ -109,8 +92,8 @@ int main()
             velY += (targetY - velY) / 100;
         }
 
-        X += velX / 10;
-        Y += velY / 10;
+        X += velX / 30;
+        Y += velY / 30;
 
         SDL_Rect r;
         r.w = texture->w;
@@ -127,6 +110,12 @@ int main()
 
         // the magic
         Pipera::render();
+
+        r.x = 0;
+        r.y = 0;
+        r.w = 300;
+        r.h = 180;
+        SDL_BlitSurface(shit, NULL, window, &r);
 
         SDL_Flip(window);
         SDL_Delay(1);

@@ -100,32 +100,12 @@ namespace Pipera
 
 
 
-    class CanvasClass : public Widget
-    {
-    private:
-        std::map<Window*, Position> windows;
-        SDL_Surface* target;
-
-    public:
-        CanvasClass();
-
-        SDL_Surface* getTargetSurface();
-
-        void init(SDL_Surface* target);
-
-        void addWindow(Window* window, Position position);
-        void alignWindow(Window* window, Pinpointer window_pixel, Window* target, Pinpointer target_pixel);
-
-        void onRender();
-    };
-
     /*####################################################################*\
     ###                                                                  ###
     ##      PUBLIC TYPE DEFINITIONS                                       ##
     ###                                                                  ###
     \*####################################################################*/
 
-    extern CanvasClass Canvas;
 
 
 
@@ -141,11 +121,17 @@ namespace Pipera
     ###                                                                  ###
     \*####################################################################*/
 
-    bool init(SDL_Surface* target);
+    namespace Canvas
+    {
+        void addWindow(Window* window, Position position);
+        void alignWindow(Window* window, Pinpointer window_pixel, Window* target, Pinpointer target_pixel);
+    }
 
-    bool processEvent(SDL_Event* e);
 
-    bool render();
+    void init(SDL_Surface* target);
 
-    int RGBA(int r, int g, int b, int a = SDL_ALPHA_OPAQUE);
+    Uint32 RGB(int r, int g, int b);
+    Uint32 getColorKey();
+
+    void render();
 };

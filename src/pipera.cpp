@@ -4,6 +4,14 @@
 
 namespace Pipera
 {
+    namespace
+    {
+        Uint32 colorKey;
+        SDL_Surface* target;
+        SDL_Surface* canvas;
+    }
+
+
     Position::Position(int x, int y) : X{x}, Y{y}
     {
         // nothing
@@ -85,15 +93,13 @@ namespace Pipera
         if (w == 0 || h == 0)
             return NULL;
 
-        // FIXME the next part is probably wrong and unnecessary
-        // but tbh i dont understand the SDL1 docs about alpha blending and
-        // its working
-
-        SDL_Surface* temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, w, h, 32, 0, 0, 0, 0);
-        SDL_Surface* surface = SDL_DisplayFormatAlpha(temp);
+        SDL_Surface* temp = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, 0, 0, 0, 0);
+        SDL_Surface* surface = SDL_DisplayFormat(temp);
         SDL_FreeSurface(temp);
 
-        SDL_SetAlpha(surface, SDL_SRCALPHA, SDL_ALPHA_OPAQUE);
+        SDL_FillRect(surface, NULL, colorKey);
+
+        SDL_SetColorKey(surface, SDL_SRCCOLORKEY, colorKey);
 
         return surface;
     }
@@ -128,8 +134,10 @@ namespace Pipera
 
     void Widget::render()
     {
-        if (!dirty)
-            return;
+        /*if (!dirty)
+            return;*/
+
+        SDL_FillRect(surface, NULL, RGB(rand(), rand(), rand()));
 
         onRender();
         dirty = false;
@@ -151,7 +159,7 @@ namespace Pipera
     AABB Widget::getAABB() const
     {
         // TODO compute global AABB
-        return AABB{0, 0, getWidth(), getHeight()};
+        return AABB{0, 0, int(getWidth()), int(getHeight())};
     }
 
 
@@ -185,57 +193,6 @@ namespace Pipera
         hidden = !hidden;
     }
 
-
-
-    CanvasClass::CanvasClass() : Widget{0, 0}, target{NULL}
-    {
-        // nothing
-    }
-
-    SDL_Surface* CanvasClass::getTargetSurface()
-    {
-        return target;
-    }
-
-    void CanvasClass::init(SDL_Surface* t)
-    {
-        target = t;
-
-        if (surface)
-            SDL_FreeSurface(surface);
-
-        surface = Surface::create(target->w, target->h);
-        markDirty();
-    }
-
-    void CanvasClass::addWindow(Window* w, Position pos)
-    {
-        windows.insert(std::make_pair(w, pos));
-    }
-
-    void CanvasClass::alignWindow(Window* w, Pinpointer wp, Window* t, Pinpointer tp)
-    {
-        // TODO
-    }
-
-    void CanvasClass::onRender()
-    {
-        SDL_FillRect(surface, NULL, RGBA(0, 0, 0, 255));
-
-        SDL_Rect r;
-        for (auto w : windows)
-        {
-            if (w.first->isDirty())
-                w.first->render();
-
-            r.x = w.second.X;
-            r.y = w.second.Y;
-            r.w = w.first->getWidth();
-            r.h = w.first->getHeight();
-
-            SDL_BlitSurface(w.first->getSurface(), NULL, surface, &r);
-        }
-    }
 
 
 
@@ -305,7 +262,6 @@ namespace Pipera
     ###                                                                  ###
     \*####################################################################*/
 
-    CanvasClass Canvas;
 
     /*####################################################################*\
     ###                                                                  ###
@@ -321,29 +277,42 @@ namespace Pipera
     ###                                                                  ###
     \*####################################################################*/
 
-
-    bool init(SDL_Surface* target)
+    void init(SDL_Surface* t)
     {
-        Canvas.init(target);
-        return true;
+        if (canvas)
+            SDL_FreeSurface(canvas);
+
+        target = t;
+
+        colorKey = RGB(255, 0, 255);
+
+        canvas = Surface::create(t->w, t->h);
     }
 
-    bool processClick(SDL_Event* e)
+    Uint32 getColorKey()
     {
-        //return Canvas.processClick(e);
+        return colorKey;
     }
 
-    bool render()
+    void render()
     {
-        //Cursor.autosetLocation();
-        Canvas.render();
+        SDL_FillRect(canvas, NULL, colorKey);
 
-        return true;
+        SDL_Rect r;
+        r.w = 100 + rand() % 100;
+        r.h = 100 + rand() % 100;
+
+        r.x = rand() % (target->w - r.w);
+        r.y = rand() % (target->h - r.h);
+
+        SDL_FillRect(canvas, &r, RGB(255, 255, 255));
+
+        SDL_BlitSurface(canvas, NULL, target, NULL);
     }
 
-    int RGBA(int r, int g, int b, int a)
+    Uint32 RGB(int r, int g, int b)
     {
-        return SDL_MapRGBA(Canvas.getTargetSurface()->format, r, g, b, a);
+        return SDL_MapRGB(target->format, r, g, b);
     }
 
     /*####################################################################*\
