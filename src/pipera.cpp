@@ -193,7 +193,7 @@ namespace Pipera
 
 
 
-    Window::Window(size_t w, size_t h, bool hid) : Widget{w, h}, hidden{hid}, child{NULL}
+    Window::Window(size_t w, size_t h, bool hid) : Widget{w, h}, hidden{hid}
     {
         // nothing
     }
