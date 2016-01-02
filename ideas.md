@@ -13,6 +13,23 @@
 - az output végül egy AbsoluteContainer? azon meg window-k? vagy szimpla widget-ek? mivel több egy window a widget-nél? (pl hidden bit)
 - hotkey support?
 - témázhatóság? stílusinformáció elválasztása? hogy ne legyen hardcode-olt minden kinézet
+- szülő widget pointer? sokszor kell, pl markDirty
+- a hidden jelző lehetne a widget-é a window helyett
+- widget globális AABB lekérdezés? ez para, mert az összes szülőjétől függ, főleg, ha még scrollable containerben is van...
+- window typeok???
+- cursorclass? mármint amihez lehez igazítani n shit
+
+# Milestones
+
+Nagyobb feature-ök, amiket implementálni kell, de nem feltétlenül ilyen sorrendben:
+
+- összes konténer
+- bitmap font
+- resize
+- drag events
+- textinput
+- widgettől meg eseménytől függő kurzorok
+- témázhatóság
 
 
 ### render pipeline

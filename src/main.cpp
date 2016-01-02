@@ -7,7 +7,7 @@ const int HEIGHT = 800;
 
 bool running = true;
 SDL_Surface *window, *texture;
-int X, Y;
+double X, Y;
 double velX, velY, targetX, targetY;
 SDL_Event e;
 
@@ -153,15 +153,15 @@ int main()
             velY += (targetY - velY) / 100;
         }
 
-        X += velX / 40;
-        Y += velY / 40;
+        X += velX / 10;
+        Y += velY / 10;
 
         SDL_Rect r;
         r.w = texture->w;
         r.h = texture->h;
-        for (int x = (X % texture->w) - texture->w; x <= window->w; x+= texture->w)
+        for (int x = (int(X) % texture->w) - texture->w; x <= window->w; x+= texture->w)
         {
-            for (int y = (Y % texture->h) - texture->h; y <= window->h; y += texture->h)
+            for (int y = (int(Y) % texture->h) - texture->h; y <= window->h; y += texture->h)
             {
                 r.x = x;
                 r.y = y;

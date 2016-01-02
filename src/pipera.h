@@ -7,28 +7,12 @@
 
 namespace Pipera
 {
-    /*####################################################################*\
-    ###                                                                  ###
-    ##      PUBLIC TYPE DEFINITIONS                                       ##
-    ###                                                                  ###
-    \*####################################################################*/
-
-    class IDrawable
+    struct Pinpointer
     {
-    protected:
-        SDL_Surface* surface;
-        bool transparent;
+        double width, height;
+        int X, Y;
 
-    public:
-        IDrawable(int w = 0, int h = 0, bool t = false);
-        virtual ~IDrawable();
-
-        int getWidth() const;
-        int getHeight() const;
-        SDL_Surface* getSurface();
-        bool getTransparent();
-
-        virtual bool render() = 0;
+        Pinpointer(double width = 0.5, double height = 0.5, int x = 0, int y = 0);
     };
 
 
@@ -38,72 +22,57 @@ namespace Pipera
         int x, X,
             y, Y;
 
-        AABB(int x, int X, int y, int Y);
         AABB(int x, int y);
+        AABB(int x, int X, int y, int Y);
 
-        bool doesOverlapWith(AABB aabb);
+        bool collides(AABB other) const;
     };
 
 
 
-    class Widget : public IDrawable
+    class Surface
     {
     protected:
-        int X, Y;
-        Widget* parent;
+        SDL_Surface* surface;
+
+    public:
+        Surface(SDL_Surface* given_surface);
+        Surface(size_t width, size_t height);
+
+        size_t getWidth() const;
+        size_t getHeight() const;
+
+        SDL_Surface* getSurface();
+
+        static SDL_Surface* create(size_t width, size_t height);
+
+        virtual ~Surface();
+    };
+
+
+
+    class Widget : public Surface
+    {
+    protected:
         bool dirty;
 
+        Widget* parent;
+
+        // TODO add widget reactsTo and cursor
+
     public:
-        Widget(int w = 0, int h = 0, int x = 0, int y = 0);
+        Widget(size_t width, size_t h);
 
-        int getX() const;
-        int getY() const;
+        void setSize(size_t width, size_t height);
+        virtual void onResize();
 
-        void setX(int x = 0);
-        void setY(int y = 0);
+        void render();
+        virtual void onRender();
 
-        int getGlobalX() const;
-        int getGlobalY() const;
+        void markDirty();
+        bool isDirty() const;
 
         AABB getAABB() const;
-
-        bool isDirty() const;
-        void markDirty();
-    };
-
-
-
-    class PaddingContainer : public Widget
-    {
-    protected:
-        int top, right, bottom, left;
-        Widget* child;
-
-    public:
-        PaddingContainer(Widget* child, int top, int right = 0, int bottom = 0, int left = 0);
-
-        bool render();
-    };
-
-
-
-    class IContainer
-    {
-    public:
-        virtual ~IContainer();
-
-        virtual bool attachWidget(Widget* w) = 0;
-        virtual bool detachWidget(Widget* w) = 0;
-    };
-
-
-
-    struct PixelPicker
-    {
-        float W, H;
-        int X, Y;
-
-        PixelPicker(float w = 0.0, float h = 0.0, int x = 0, int y = 0);
     };
 
 
@@ -111,60 +80,34 @@ namespace Pipera
     class Window : public Widget
     {
     protected:
-        enum class Type
-        {
-            NORMAL,
+        bool hidden;
 
-        } type;
+        // TODO different window types
 
     public:
-        Window(int w = 0, int h = 0, int x = 0, int y = 0);
+        Window(size_t width, size_t height, bool hidden = false);
 
-        void alignTo(Window* target, PixelPicker subjectPixel = PixelPicker(), PixelPicker targetPixel = PixelPicker());
-
-        friend struct PixelPicker;
+        bool isHidden() const;
+        void hide();
+        void show();
+        void toggle();
     };
 
-
-
-    class CursorClass : public Window
-    {
-    public:
-        CursorClass();
-        void autosetLocation();
-        bool render();
-    };
+    /*####################################################################*\
+    ###                                                                  ###
+    ##      PUBLIC TYPE DEFINITIONS                                       ##
+    ###                                                                  ###
+    \*####################################################################*/
 
 
 
-    class OutputClass : public Window
-    {
-    private:
-        std::vector<Window*> windows;
-        SDL_Surface* targetSurface;
-        int transparentColor;
 
-    public:
-        OutputClass();
-        bool init(SDL_Surface* target);
-
-        bool addWindow(Window* w);
-
-        bool processClick(SDL_Event* e);
-
-        bool render();
-
-        int getTransparentColor();
-    };
 
     /*####################################################################*\
     ###                                                                  ###
     ##      PUBLIC VARIABLES                                              ##
     ###                                                                  ###
     \*####################################################################*/
-
-    extern OutputClass Output;
-    extern CursorClass Cursor;
 
     /*####################################################################*\
     ###                                                                  ###
@@ -174,7 +117,7 @@ namespace Pipera
 
     bool init(SDL_Surface* target);
 
-    bool processClick(SDL_Event* e);
+    bool processEvent(SDL_Event* e);
 
     bool render();
 

@@ -3,6 +3,185 @@
 
 namespace Pipera
 {
+    Pinpointer::Pinpointer(double w, double h, int x, int y) : width(w), height(h), X(x), Y(y)
+    {
+        // nothing
+    }
+
+
+
+    AABB::AABB(int _x, int _y) : x(_x), X(_x), y(_y), Y(_y)
+    {
+        // nothing
+    }
+
+    AABB::AABB(int _x, int _X, int _y, int _Y) : x(_x), X(_X), y(_y), Y(_Y)
+    {
+        if (x > X)
+            std::swap(x, X);
+
+        if (y > Y)
+            std::swap(y, Y);
+    }
+
+    bool AABB::collides(AABB other) const
+    {
+        // its MUCH easier to check if they definitely do not overlap
+
+        if (X < other.x)
+            return false;
+
+        if (other.X < x)
+            return false;
+
+        if (Y < other.y)
+            return false;
+
+        if (other.Y < y)
+            return false;
+
+        // if none of the previous conditions were true, they must overlap
+        return true;
+    }
+
+
+    Surface::Surface(SDL_Surface* given) : surface{given}
+    {
+        // nothing
+    }
+
+    Surface::Surface(size_t w, size_t h) : surface{Surface::create(w, h)}
+    {
+        // nothing
+    }
+
+    size_t Surface::getWidth() const
+    {
+        return surface->w;
+    }
+
+    size_t Surface::getHeight() const
+    {
+        return surface->h;
+    }
+
+    SDL_Surface* Surface::getSurface()
+    {
+        return surface;
+    }
+
+    SDL_Surface* Surface::create(size_t w, size_t h)
+    {
+        if (w == 0 || h == 0)
+            return NULL;
+
+        // FIXME the next part is probably wrong and unnecessary
+        // but tbh i dont understand the SDL1 docs about alpha blending and
+        // its working
+
+        SDL_Surface* temp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, w, h, 32, 0, 0, 0, 0);
+        SDL_Surface* surface = SDL_DisplayFormatAlpha(temp);
+        SDL_FreeSurface(temp);
+
+        SDL_SetAlpha(surface, SDL_SRCALPHA, SDL_ALPHA_OPAQUE);
+
+        return surface;
+    }
+
+    Surface::~Surface()
+    {
+        if (surface)
+            SDL_FreeSurface(surface);
+    }
+
+
+
+    Widget::Widget(size_t w, size_t h) : Surface{w, h}, dirty{true}, parent{NULL}
+    {
+        // nothing
+    }
+
+
+    void Widget::setSize(size_t w, size_t h)
+    {
+        if (surface)
+            SDL_FreeSurface(surface);
+
+        surface = Surface::create(w, h);
+        markDirty();
+    }
+
+    void Widget::onResize()
+    {
+        // nothing? FIXME do we even need this?
+    }
+
+    void Widget::render()
+    {
+        if (!dirty)
+            return;
+
+        onRender();
+        dirty = false;
+    }
+
+    void Widget::onRender()
+    {
+        // nothing?
+        // this should be overwritten with the custon render functions
+    }
+
+    void Widget::markDirty()
+    {
+        dirty = true;
+
+        if (parent)
+            parent->markDirty();
+    }
+
+    bool Widget::isDirty() const
+    {
+        return dirty;
+    }
+
+    AABB Widget::getAABB() const
+    {
+        return AABB{0, 0, getWidth(), getHeight()};
+    }
+
+
+
+
+
+
+
+    Window::Window(size_t w, size_t h, bool hid) : Widget{w, h}, hidden{hid}
+    {
+        // nothing
+    }
+
+    bool Window::isHidden() const
+    {
+        return hidden;
+    }
+
+    void Window::hide()
+    {
+        hidden = true;
+    }
+
+    void Window::show()
+    {
+        hidden = false;
+    }
+
+    void Window::toggle()
+    {
+        hidden = !hidden;
+    }
+
+
+
     /*####################################################################*\
     ###                                                                  ###
     ##      PUBLIC TYPE DEFINITIONS                                       ##
@@ -83,20 +262,20 @@ namespace Pipera
         // nothing
      }
 
-     bool AABB::doesOverlapWith(AABB aabb)
+     bool AABB::doesOverlapWith(AABB other)
      {
         // its MUCH easier to check if they definitely do not overlap
 
-        if (X < aabb.x)
+        if (X < other.x)
             return false;
 
-        if (aabb.X < x)
+        if (other.X < x)
             return false;
 
-        if (Y < aabb.y)
+        if (Y < other.y)
             return false;
 
-        if (aabb.Y < y)
+        if (other.Y < y)
             return false;
 
         // if none of the previous conditions were true, they must overlap
