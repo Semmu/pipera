@@ -123,9 +123,9 @@ int main()
 
 
     SDL_Surface* settingssurf = loadimg("text_settings.bmp");
-    Pipera::ImageWidget settingsimagewidget(settingssurf);
-    Pipera::PaddingContainer settingspc(&settingsimagewidget, 0, 15);
-    Pipera::DecoratedContainer settingsbtn(&settingspc, red_button_decor, 15);
+    Pipera::ImageWidget settingsimagewidget(red_button_decor);
+    Pipera::FixedSizeContainer settingsfsc(150, 80, &settingsimagewidget, 0.5, 1);
+    Pipera::DecoratedContainer settingsbtn(&settingsfsc, red_button_decor, 15);
     Pipera::OneWidgetWindow settingswin(&settingsbtn);
     Pipera::Canvas::addWindow(&settingswin);
     Pipera::Canvas::alignWindow(&settingswin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 100, 0.5, 0});

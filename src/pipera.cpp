@@ -174,6 +174,40 @@ namespace Pipera
         return AABB{0, 0, int(getWidth()), int(getHeight())};
     }
 
+    FixedSizeContainer::FixedSizeContainer(size_t w, size_t h, Widget* c, double x, double y) : Widget{w, h}, xalign{x}, yalign{y}, child{c}
+    {
+        // nothing
+    }
+
+    void FixedSizeContainer::onRender()
+    {
+        if (child->isDirty())
+            child->render();
+
+        SDL_FillRect(surface, NULL, rand());
+
+        SDL_Rect srcr, destr;
+
+        srcr.x = 0;
+        srcr.y = 0;
+        srcr.w = child->getWidth();
+        srcr.h = child->getHeight();
+
+        if (getWidth() < child->getWidth())
+            srcr.x = (child->getWidth() - getWidth()) * xalign;
+
+        if (getHeight() < child->getHeight())
+            srcr.y = (child->getHeight() - getHeight()) * yalign;
+
+        destr.x = (getWidth() - child->getWidth()) * xalign;
+        destr.y = (getHeight() - child->getHeight()) * yalign;
+        destr.w = child->getWidth();
+        destr.h = child->getHeight();
+
+
+        SDL_BlitSurface(child->getSurface(), &srcr, surface, &destr);
+    }
+
 
     PaddingContainer::PaddingContainer(Widget* w, size_t t, size_t r, size_t b, size_t l) : Widget{0, 0}, top{t}, right{r}, bottom{b}, left{l}, child{w}
     {

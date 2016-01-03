@@ -83,6 +83,18 @@ namespace Pipera
         AABB getAABB() const;
     };
 
+    class FixedSizeContainer : public Widget
+    {
+    protected:
+        double xalign, yalign;
+        Widget* child;
+
+    public:
+        FixedSizeContainer(size_t width, size_t height, Widget* child, double xalign = 0.5, double yalign = 0.5);
+
+        void onRender();
+    };
+
     class PaddingContainer : public Widget
     {
     protected:
