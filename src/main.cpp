@@ -3,8 +3,8 @@
 #include <SDL/SDL_image.h>
 #include "pipera.h"
 
-const int WIDTH = 1500;
-const int HEIGHT = 800;
+const int WIDTH = 500;
+const int HEIGHT = 500;
 
 bool running = true;
 SDL_Surface *window, *texture;

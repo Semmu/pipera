@@ -19,6 +19,7 @@
 - window typeok???
 - cursorclass? mármint amihez lehez igazítani n shit
 - force render()? minden widget mindenképp újrarajzolódik?
+- debug flags? milyen debug dolgok kellenek?
 
 # Milestones
 
