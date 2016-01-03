@@ -85,14 +85,33 @@ namespace Pipera
 
     class PaddingContainer : public Widget
     {
-    private:
+    protected:
         size_t top, right, bottom, left;
         Widget* child;
 
     public:
-        PaddingContainer(Widget* widget, size_t top, size_t right = 0, size_t bottom = 0, size_t left = 0);
+        PaddingContainer(Widget* widget, size_t top, size_t right, size_t bottom, size_t left);
 
-        void onRender() final;
+        PaddingContainer(Widget* widget, size_t top);
+        PaddingContainer(Widget* widget, size_t top, size_t right);
+        PaddingContainer(Widget* widget, size_t top, size_t right, size_t bottom);
+
+        void onRender();
+    };
+
+    class DecoratedContainer : public PaddingContainer
+    {
+    protected:
+        SDL_Surface* decoration;
+
+    public:
+        DecoratedContainer(Widget* widget, SDL_Surface* decoration, size_t top, size_t right, size_t bottom, size_t left);
+
+        DecoratedContainer(Widget* widget, SDL_Surface* decoration, size_t top);
+        DecoratedContainer(Widget* widget, SDL_Surface* decoration, size_t top, size_t right);
+        DecoratedContainer(Widget* widget, SDL_Surface* decoration, size_t top, size_t right, size_t bottom);
+
+        void onRender();
     };
 
 

@@ -175,11 +175,25 @@ namespace Pipera
     }
 
 
-    PaddingContainer::PaddingContainer(Widget* w, size_t t, size_t r, size_t b, size_t l) :
-        Widget{(l ? l : ( r ? r : t)) + w->getWidth() + (r ? r : t),
-                t + w->getHeight() + (b ? b : t)}, top{t}, right{r}, bottom{b}, left{l}, child{w}
+    PaddingContainer::PaddingContainer(Widget* w, size_t t, size_t r, size_t b, size_t l) : Widget{0, 0}, top{t}, right{r}, bottom{b}, left{l}, child{w}
     {
+        surface = Surface::create(left + w->getWidth() + right, top + w->getHeight() + bottom);
         // TODO set child's parent!!!
+    }
+
+    PaddingContainer::PaddingContainer(Widget* w, size_t t) : PaddingContainer{w, t, t, t, t}
+    {
+        // nothing
+    }
+
+    PaddingContainer::PaddingContainer(Widget* w, size_t t, size_t r) : PaddingContainer{w, t, r, t, r}
+    {
+        // nothing
+    }
+
+    PaddingContainer::PaddingContainer(Widget* w, size_t t, size_t r, size_t b) : PaddingContainer{w, t, r, b, r}
+    {
+        // nothing
     }
 
     void PaddingContainer::onRender()
@@ -198,6 +212,218 @@ namespace Pipera
         r.h = child->getHeight();
 
         SDL_BlitSurface(child->getSurface(), NULL, surface, &r);
+    }
+
+    DecoratedContainer::DecoratedContainer(Widget* w, SDL_Surface* decor, size_t t, size_t r, size_t b, size_t l) : PaddingContainer{w, t, r, b, l}, decoration{decor}
+    {
+        // TODO set child's parent!!!
+
+        if (size_t(decor->w) < l + 1 + r || size_t(decor->h) < t + 1 + b)
+        {
+            // TODO throw exception, if the decoration is smaller than the padding
+        }
+    }
+
+    DecoratedContainer::DecoratedContainer(Widget* w, SDL_Surface* decor, size_t t) : DecoratedContainer{w, decor, t, t, t, t}
+    {
+        // nothing
+    }
+
+    DecoratedContainer::DecoratedContainer(Widget* w, SDL_Surface* decor, size_t t, size_t r) : DecoratedContainer{w, decor, t, r, t, r}
+    {
+        // nothing
+    }
+
+    DecoratedContainer::DecoratedContainer(Widget* w, SDL_Surface* decor, size_t t, size_t r, size_t b) : DecoratedContainer{w, decor, t, r, b, r}
+    {
+        // nothing
+    }
+
+    void DecoratedContainer::onRender()
+    {
+        // FIXME the whole decoration and pattern blitting process could be optimized likely a lot
+
+        if (child->isDirty())
+            child->render();
+
+        // FIXME what if the child changed its size?
+
+        SDL_FillRect(surface, NULL, colorKey);
+
+        SDL_Rect decorr, destr;
+
+
+        // top left corner
+        decorr.x = 0;
+        decorr.y = 0;
+        decorr.w = left;
+        decorr.h = top;
+        destr.x = 0;
+        destr.y = 0;
+        destr.w = left;
+        destr.h = top;
+        SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+        // top right corner
+        decorr.x = decoration->w - right;
+        decorr.y = 0;
+        decorr.w = right;
+        decorr.h = top;
+        destr.x = surface->w - right;
+        destr.y = 0;
+        destr.w = right;
+        destr.h = top;
+        SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+
+        // bottom left corner
+        decorr.x = 0;
+        decorr.y = decoration->h - bottom;
+        decorr.w = left;
+        decorr.h = bottom;
+        destr.x = 0;
+        destr.y = surface->h - bottom;
+        destr.w = left;
+        destr.h = bottom;
+        SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+
+        // bottom right corner
+        decorr.x = decoration->w - right;
+        decorr.y = decoration->h - bottom;
+        decorr.w = right;
+        decorr.h = bottom;
+        destr.x = surface->w - right;
+        destr.y = surface->h - bottom;
+        destr.w = right;
+        destr.h = bottom;
+        SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+
+        // center pattern
+
+        int decorw = decoration->w - left - right;
+        int destw = surface->w - left - right;
+
+        int decorh = decoration->h - top - bottom;
+        int desth = surface->h - top - bottom;
+
+
+        int xcount = 0;
+        int ycount = 0;
+
+        while (ycount * decorh < desth)
+        {
+            xcount = 0;
+
+            // left border
+            decorr.x = 0;
+            decorr.y = top;
+            decorr.w = right;
+            if (ycount * decorh <= desth - decorh)
+                decorr.h = decorh;
+            else
+                decorr.h = desth % decorh;
+
+            destr.x = 0;
+            destr.y = top + ycount * decorh;
+            destr.w = right;
+            destr.h = decorh;
+
+            SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+
+
+            // right border
+            decorr.x = decoration->w - right;
+            decorr.y = top;
+            decorr.w = right;
+            if (ycount * decorh <= desth - decorh)
+                decorr.h = decorh;
+            else
+                decorr.h = desth % decorh;
+
+            destr.x = surface->w - right;
+            destr.y = top + ycount * decorh;
+            destr.w = right;
+            destr.h = decorh;
+
+            SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+
+
+            while (xcount * decorw < destw)
+            {
+                // this is the first row, so we draw the top and bottom borders
+                if (ycount == 0)
+                {
+                    // top border
+                    decorr.x = left;
+                    decorr.y = 0;
+                    decorr.h = top;
+                    if (xcount * decorw <= destw - decorw)
+                        decorr.w = decorw;
+                    else
+                        decorr.w = destw % decorw;
+
+                    destr.x = left + xcount * decorw;
+                    destr.y = 0;
+                    destr.w = decorw;
+                    destr.h = top;
+
+                    SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+                    // bottom border
+                    decorr.x = left;
+                    decorr.y = top + decorh;
+                    decorr.h = bottom;
+                    if (xcount * decorw <= destw - decorw)
+                        decorr.w = decorw;
+                    else
+                        decorr.w = destw % decorw;
+
+                    destr.x = left + xcount * decorw;
+                    destr.y = surface->h - bottom;
+                    destr.w = decorw;
+                    destr.h = bottom;
+
+                    SDL_BlitSurface(decoration, &decorr, surface, &destr);
+                }
+
+                // center pattern
+                destr.x = left + xcount * decorw;
+                destr.y = top + ycount * decorh;
+                destr.w = decorr.w;
+                destr.h = decorr.h;
+
+                decorr.x = left;
+                decorr.y = top;
+                if (ycount * decorh <= desth - decorh)
+                    decorr.h = decorh;
+                else
+                    decorr.h = desth % decorh;
+
+                if (xcount * decorw <= destw - decorw)
+                    decorr.w = decorw;
+                else
+                    decorr.w = destw % decorw;
+
+                SDL_BlitSurface(decoration, &decorr, surface, &destr);
+
+                xcount++;
+            }
+
+            ycount++;
+        }
+
+
+
+        // the child widget
+        destr.x = left;
+        destr.y = top;
+        destr.w = child->getWidth();
+        destr.h = child->getHeight();
+        SDL_BlitSurface(child->getSurface(), NULL, surface, &destr);
     }
 
 
