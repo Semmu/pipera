@@ -58,7 +58,7 @@ int main()
     window = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_ANYFORMAT);
     Pipera::init(window);
 
-    SDL_Surface* texture = loadimg("grass.png");
+    SDL_Surface* texture = loadimg("res/grass.png");
 
     Trippy t1{800, 100}, t2{150, 150}, t3{350, 500}, t4{400, 100};
 
@@ -75,9 +75,9 @@ int main()
     Pipera::Canvas::addWindow(&t4);
     Pipera::Canvas::alignWindow(&t4, Pipera::Pinpointer{0, 0, 0, 0.5}, &t2, Pipera::Pinpointer{10, 0, 1, 0.5});
 
-    SDL_Surface* decor = loadimg("debug_border.bmp");
-    SDL_Surface* bng_decor = loadimg("gold_border.bmp");
-    SDL_Surface* battle_decor = loadimg("battle_border.bmp");
+    SDL_Surface* decor = loadimg("res/debug_border.bmp");
+    SDL_Surface* bng_decor = loadimg("res/gold_border.bmp");
+    SDL_Surface* battle_decor = loadimg("res/battle_border.bmp");
 
 
     Pipera::ImageWidget textureW(bng_decor);
@@ -88,7 +88,7 @@ int main()
     Pipera::Canvas::alignWindow(&oww, Pipera::Pinpointer{0, 0, 0, 0}, NULL, Pipera::Pinpointer{50, 50, 0, 0});
 
 
-    SDL_Surface* sth_awesome_text = loadimg("sth_awesome.bmp");
+    SDL_Surface* sth_awesome_text = loadimg("res/sth_awesome.bmp");
     Pipera::ImageWidget textureW2(sth_awesome_text);
     Pipera::PaddingContainer pc2(&textureW2, 30, 50);
     Pipera::DecoratedContainer dc2(&pc2, bng_decor, 6);
@@ -98,9 +98,9 @@ int main()
 
 
 
-    SDL_Surface* red_button_decor = loadimg("red_button.bmp");
+    SDL_Surface* red_button_decor = loadimg("res/red_button.bmp");
 
-    SDL_Surface* newgamesurf = loadimg("text_new_game.bmp");
+    SDL_Surface* newgamesurf = loadimg("res/text_new_game.bmp");
     Pipera::ImageWidget newgameimagewidget(newgamesurf);
     Pipera::FixedSizeContainer newgamefsc(100, 15, &newgameimagewidget);
     Pipera::DecoratedContainer newgamebtn(&newgamefsc, red_button_decor, 15);
@@ -114,7 +114,7 @@ int main()
     Pipera::Canvas::alignWindow(&menuwin, Pipera::Pinpointer{0, 0, 0.5, 0.5}, NULL, Pipera::Pinpointer{0, 0, 0.5, 0.5});
 
 
-    SDL_Surface* loadgamesurf = loadimg("text_load_game.bmp");
+    SDL_Surface* loadgamesurf = loadimg("res/text_load_game.bmp");
     Pipera::ImageWidget loadgameimagewidget(loadgamesurf);
     Pipera::FixedSizeContainer loadgamefsc(100, 15, &loadgameimagewidget);
     Pipera::DecoratedContainer loadgamebtn(&loadgamefsc, red_button_decor, 15);
@@ -123,7 +123,7 @@ int main()
     Pipera::Canvas::alignWindow(&loadgamewin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 84, 0.5, 0});
 
 
-    SDL_Surface* settingssurf = loadimg("text_settings.bmp");
+    SDL_Surface* settingssurf = loadimg("res/text_settings.bmp");
     Pipera::ImageWidget settingsimagewidget(settingssurf);
     Pipera::FixedSizeContainer settingsfsc(100, 15, &settingsimagewidget);
     Pipera::DecoratedContainer settingsbtn(&settingsfsc, red_button_decor, 15);
@@ -131,7 +131,7 @@ int main()
     Pipera::Canvas::addWindow(&settingswin);
     Pipera::Canvas::alignWindow(&settingswin, Pipera::Pinpointer{0, 0, 0.5, 0}, &loadgamewin, Pipera::Pinpointer{0, 10, 0.5, 1});
 
-    SDL_Surface* quitsurf = loadimg("text_quit.bmp");
+    SDL_Surface* quitsurf = loadimg("res/text_quit.bmp");
     Pipera::ImageWidget quitimagewidget(quitsurf);
     Pipera::FixedSizeContainer quitfsc(100, 15, &quitimagewidget);
     Pipera::DecoratedContainer quitbtn(&quitfsc, red_button_decor, 15);
