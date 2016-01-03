@@ -101,10 +101,10 @@ int main()
 
     SDL_Surface* newgamesurf = loadimg("text_new_game.bmp");
     Pipera::ImageWidget newgameimagewidget(newgamesurf);
-    Pipera::PaddingContainer newgamepc(&newgameimagewidget, 0, 15);
-    Pipera::DecoratedContainer newgamebtn(&newgamepc, red_button_decor, 15);
+    Pipera::FixedSizeContainer newgamefsc(100, 15, &newgameimagewidget);
+    Pipera::DecoratedContainer newgamebtn(&newgamefsc, red_button_decor, 15);
 
-    Pipera::PaddingContainer menupadding(&newgamebtn, 20, 20, 50);
+    Pipera::PaddingContainer menupadding(&newgamebtn, 10, 10, 115);
     Pipera::DecoratedContainer menudecor(&menupadding, bng_decor, 6);
 
     Pipera::OneWidgetWindow menuwin(&menudecor);
@@ -115,20 +115,20 @@ int main()
 
     SDL_Surface* loadgamesurf = loadimg("text_load_game.bmp");
     Pipera::ImageWidget loadgameimagewidget(loadgamesurf);
-    Pipera::PaddingContainer loadgamepc(&loadgameimagewidget, 0, 15);
-    Pipera::DecoratedContainer loadgamebtn(&loadgamepc, red_button_decor, 15);
+    Pipera::FixedSizeContainer loadgamefsc(100, 15, &loadgameimagewidget);
+    Pipera::DecoratedContainer loadgamebtn(&loadgamefsc, red_button_decor, 15);
     Pipera::OneWidgetWindow loadgamewin(&loadgamebtn);
     Pipera::Canvas::addWindow(&loadgamewin);
-    Pipera::Canvas::alignWindow(&loadgamewin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 50, 0.5, 0});
+    Pipera::Canvas::alignWindow(&loadgamewin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 70, 0.5, 0});
 
 
     SDL_Surface* settingssurf = loadimg("text_settings.bmp");
-    Pipera::ImageWidget settingsimagewidget(red_button_decor);
-    Pipera::FixedSizeContainer settingsfsc(150, 80, &settingsimagewidget, 0.5, 1);
+    Pipera::ImageWidget settingsimagewidget(settingssurf);
+    Pipera::FixedSizeContainer settingsfsc(100, 15, &settingsimagewidget);
     Pipera::DecoratedContainer settingsbtn(&settingsfsc, red_button_decor, 15);
     Pipera::OneWidgetWindow settingswin(&settingsbtn);
     Pipera::Canvas::addWindow(&settingswin);
-    Pipera::Canvas::alignWindow(&settingswin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 100, 0.5, 0});
+    Pipera::Canvas::alignWindow(&settingswin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 124, 0.5, 0});
 
 
 

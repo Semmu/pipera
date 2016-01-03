@@ -184,8 +184,6 @@ namespace Pipera
         if (child->isDirty())
             child->render();
 
-        SDL_FillRect(surface, NULL, rand());
-
         SDL_Rect srcr, destr;
 
         srcr.x = 0;
