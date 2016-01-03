@@ -4,6 +4,12 @@
 
 namespace Pipera
 {
+    /*####################################################################*\
+    ###                                                                  ###
+    ##      PRIVATE VARIABLE DECLARATIONS                                 ##
+    ###                                                                  ###
+    \*####################################################################*/
+
     namespace
     {
         Uint32 colorKey;
@@ -14,6 +20,29 @@ namespace Pipera
     }
 
 
+
+    /*####################################################################*\
+    ###                                                                  ###
+    ##      PRIVATE METHOD DEFINITIONS                                    ##
+    ###                                                                  ###
+    \*####################################################################*/
+
+    // none yet
+
+
+
+
+    /*####################################################################*\
+    ###                                                                  ###
+    ##      PUBLIC TYPE DEFINITIONS                                       ##
+    ###                                                                  ###
+    \*####################################################################*/
+
+    /*   *\
+    \#\ /#/     POSITION
+     \###/
+      \*/
+
     Position::Position(int x, int y) : X{x}, Y{y}
     {
         // nothing
@@ -23,6 +52,13 @@ namespace Pipera
     {
         // nothing
     }
+
+
+
+    /*   *\
+    \#\ /#/     AABB
+     \###/
+      \*/
 
     AABB::AABB(int _x, int _y) : Position{_x, _y}, x{_y}, y{_y}
     {
@@ -68,6 +104,12 @@ namespace Pipera
         return true;
     }
 
+
+
+    /*   *\
+    \#\ /#/     SURFACE
+     \###/
+      \*/
 
     Surface::Surface(SDL_Surface* given) : surface{given}
     {
@@ -124,6 +166,11 @@ namespace Pipera
 
 
 
+    /*   *\
+    \#\ /#/     WIDGET
+     \###/
+      \*/
+
     Widget::Widget(size_t w, size_t h) : Surface{w, h}, dirty{true}, parent{NULL}
     {
         // nothing
@@ -174,6 +221,13 @@ namespace Pipera
         return AABB{0, 0, int(getWidth()), int(getHeight())};
     }
 
+
+
+    /*   *\
+    \#\ /#/     FIXED SIZE CONTAINER
+     \###/
+      \*/
+
     FixedSizeContainer::FixedSizeContainer(size_t w, size_t h, Widget* c, double x, double y) : Widget{w, h}, xalign{x}, yalign{y}, child{c}
     {
         // nothing
@@ -206,6 +260,12 @@ namespace Pipera
         SDL_BlitSurface(child->getSurface(), &srcr, surface, &destr);
     }
 
+
+
+    /*   *\
+    \#\ /#/     PADDING CONTAINER
+     \###/
+      \*/
 
     PaddingContainer::PaddingContainer(Widget* w, size_t t, size_t r, size_t b, size_t l) : Widget{0, 0}, top{t}, right{r}, bottom{b}, left{l}, child{w}
     {
@@ -245,6 +305,13 @@ namespace Pipera
 
         SDL_BlitSurface(child->getSurface(), NULL, surface, &r);
     }
+
+
+
+    /*   *\
+    \#\ /#/     DECORATED CONTAINER
+     \###/
+      \*/
 
     DecoratedContainer::DecoratedContainer(Widget* w, SDL_Surface* decor, size_t t, size_t r, size_t b, size_t l) : PaddingContainer{w, t, r, b, l}, decoration{decor}
     {
@@ -460,6 +527,11 @@ namespace Pipera
 
 
 
+    /*   *\
+    \#\ /#/     IMAGE WIDGET
+     \###/
+      \*/
+
     ImageWidget::ImageWidget(SDL_Surface* image) : Widget{0, 0}
     {
         surface = SDL_DisplayFormat(image);
@@ -473,9 +545,10 @@ namespace Pipera
 
 
 
-
-
-
+    /*   *\
+    \#\ /#/     WINDOW
+     \###/
+      \*/
 
     Window::Window(size_t w, size_t h, bool hid) : Widget{w, h}, hidden{hid}
     {
@@ -504,6 +577,11 @@ namespace Pipera
 
 
 
+    /*   *\
+    \#\ /#/     ONE WIDGET WINDOW
+     \###/
+      \*/
+
     OneWidgetWindow::OneWidgetWindow(Widget* ch) : Window{0, 0}
     {
         // TODO set child's parent!!!
@@ -521,86 +599,27 @@ namespace Pipera
     }
 
 
+
     /*####################################################################*\
     ###                                                                  ###
-    ##      PUBLIC TYPE DEFINITIONS                                       ##
+    ##      PUBLIC VARIABLE DEFINITION                                    ##
     ###                                                                  ###
     \*####################################################################*/
 
+     // none yet
 
+
+
+    /*####################################################################*\
+    ###                                                                  ###
+    ##      PUBLIC METHOD DEFINITIONS                                     ##
+    ###                                                                  ###
+    \*####################################################################*/
 
     /*   *\
-    \#\ /#/     IDRAWABLE
+    \#\ /#/     CANVAS NAMESPACE
      \###/
       \*/
-
-      /*\
-     /###\
-    /#/ \#\     IDRAWABLE
-    \*   */
-
-
-
-
-
-
-    /*   *\
-    \#\ /#/     WIDGET
-     \###/
-      \*/
-
-      /*\
-     /###\
-    /#/ \#\     WIDGET
-    \*   */
-
-
-    /*   *\
-    \#\ /#/     WINDOW
-     \###/
-      \*/
-
-      /*\
-     /###\
-    /#/ \#\     WINDOW
-    \*   */
-
-
-    /*   *\
-    \#\ /#/     OUTPUTCLASS
-     \###/
-      \*/
-
-
-
-    /*####################################################################*\
-    ###                                                                  ###
-    ##      PRIVATE TYPES                                                 ##
-    ###                                                                  ###
-    \*####################################################################*/
-
-
-
-    /*####################################################################*\
-    ###                                                                  ###
-    ##      PUBLIC VARIABLES                                              ##
-    ###                                                                  ###
-    \*####################################################################*/
-
-
-    /*####################################################################*\
-    ###                                                                  ###
-    ##      PRIVATE VARIABLES                                             ##
-    ###                                                                  ###
-    \*####################################################################*/
-
-
-
-    /*####################################################################*\
-    ###                                                                  ###
-    ##      PUBLIC METHODS                                                ##
-    ###                                                                  ###
-    \*####################################################################*/
 
     void Canvas::addWindow(Window* w)
     {
@@ -650,6 +669,13 @@ namespace Pipera
         windows.find(w)->second.Y += dy;
     }
 
+
+
+    /*   *\
+    \#\ /#/     NAMESPACE FUNCTIONS
+     \###/
+      \*/
+
     void init(SDL_Surface* t)
     {
         if (canvas)
@@ -694,10 +720,4 @@ namespace Pipera
     {
         return SDL_MapRGB(target->format, r, g, b);
     }
-
-    /*####################################################################*\
-    ###                                                                  ###
-    ##      PRIVATE METHODS                                               ##
-    ###                                                                  ###
-    \*####################################################################*/
 }

@@ -9,6 +9,12 @@
 
 namespace Pipera
 {
+    /*####################################################################*\
+    ###                                                                  ###
+    ##      PUBLIC TYPE DECLARATIONS                                      ##
+    ###                                                                  ###
+    \*####################################################################*/
+
     struct Position
     {
         int X, Y;
@@ -16,12 +22,16 @@ namespace Pipera
         Position(int x, int y);
     };
 
+
+
     struct Pinpointer : Position
     {
         double width, height;
 
         Pinpointer(int x = 0, int y = 0, double width = 0.5, double height = 0.5);
     };
+
+
 
     struct AABB : Position
     {
@@ -83,6 +93,8 @@ namespace Pipera
         AABB getAABB() const;
     };
 
+
+
     class FixedSizeContainer : public Widget
     {
     protected:
@@ -94,6 +106,8 @@ namespace Pipera
 
         void onRender();
     };
+
+
 
     class PaddingContainer : public Widget
     {
@@ -111,6 +125,8 @@ namespace Pipera
         void onRender();
     };
 
+
+
     class DecoratedContainer : public PaddingContainer
     {
     protected:
@@ -125,6 +141,7 @@ namespace Pipera
 
         void onRender();
     };
+
 
 
     class ImageWidget : public Widget
@@ -154,6 +171,7 @@ namespace Pipera
     };
 
 
+
     class OneWidgetWindow : public Window
     {
     private:
@@ -167,24 +185,26 @@ namespace Pipera
 
 
 
+
+
+
+
     /*####################################################################*\
     ###                                                                  ###
-    ##      PUBLIC TYPE DEFINITIONS                                       ##
+    ##      PUBLIC VARIABLE DECLARATIONS                                  ##
     ###                                                                  ###
     \*####################################################################*/
 
+    // none yet
+
+
+
 
 
 
     /*####################################################################*\
     ###                                                                  ###
-    ##      PUBLIC VARIABLES                                              ##
-    ###                                                                  ###
-    \*####################################################################*/
-
-    /*####################################################################*\
-    ###                                                                  ###
-    ##      PUBLIC METHODS                                                ##
+    ##      PUBLIC METHOD DECLARATIONS                                    ##
     ###                                                                  ###
     \*####################################################################*/
 
@@ -197,6 +217,7 @@ namespace Pipera
 
         void alignWindow(Window* window, Pinpointer window_pixel, Window* target, Pinpointer target_pixel);
     }
+
 
 
     void init(SDL_Surface* target);
