@@ -76,7 +76,8 @@ int main()
     Pipera::Canvas::alignWindow(&t4, Pipera::Pinpointer{0, 0, 0, 0.5}, &t2, Pipera::Pinpointer{10, 0, 1, 0.5});
 
     SDL_Surface* decor = loadimg("debug_border.bmp");
-    SDL_Surface* bng_decor = loadimg("brown_and_gray_border.bmp");
+    SDL_Surface* bng_decor = loadimg("gold_border.bmp");
+    SDL_Surface* battle_decor = loadimg("battle_border.bmp");
 
 
     Pipera::ImageWidget textureW(bng_decor);
@@ -87,9 +88,9 @@ int main()
     Pipera::Canvas::alignWindow(&oww, Pipera::Pinpointer{0, 0, 0, 0}, NULL, Pipera::Pinpointer{50, 50, 0, 0});
 
 
-
-    Pipera::ImageWidget textureW2(bng_decor);
-    Pipera::PaddingContainer pc2(&textureW2, 0);
+    SDL_Surface* sth_awesome_text = loadimg("sth_awesome.bmp");
+    Pipera::ImageWidget textureW2(sth_awesome_text);
+    Pipera::PaddingContainer pc2(&textureW2, 30, 50);
     Pipera::DecoratedContainer dc2(&pc2, bng_decor, 6);
     Pipera::OneWidgetWindow oww2(&dc2);
     Pipera::Canvas::addWindow(&oww2);
@@ -104,8 +105,8 @@ int main()
     Pipera::FixedSizeContainer newgamefsc(100, 15, &newgameimagewidget);
     Pipera::DecoratedContainer newgamebtn(&newgamefsc, red_button_decor, 15);
 
-    Pipera::PaddingContainer menupadding(&newgamebtn, 10, 10, 115);
-    Pipera::DecoratedContainer menudecor(&menupadding, bng_decor, 6);
+    Pipera::PaddingContainer menupadding(&newgamebtn, 10, 10, 178);
+    Pipera::DecoratedContainer menudecor(&menupadding, battle_decor, 17);
 
     Pipera::OneWidgetWindow menuwin(&menudecor);
     Pipera::Canvas::addWindow(&menuwin);
@@ -119,7 +120,7 @@ int main()
     Pipera::DecoratedContainer loadgamebtn(&loadgamefsc, red_button_decor, 15);
     Pipera::OneWidgetWindow loadgamewin(&loadgamebtn);
     Pipera::Canvas::addWindow(&loadgamewin);
-    Pipera::Canvas::alignWindow(&loadgamewin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 70, 0.5, 0});
+    Pipera::Canvas::alignWindow(&loadgamewin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 84, 0.5, 0});
 
 
     SDL_Surface* settingssurf = loadimg("text_settings.bmp");
@@ -128,7 +129,15 @@ int main()
     Pipera::DecoratedContainer settingsbtn(&settingsfsc, red_button_decor, 15);
     Pipera::OneWidgetWindow settingswin(&settingsbtn);
     Pipera::Canvas::addWindow(&settingswin);
-    Pipera::Canvas::alignWindow(&settingswin, Pipera::Pinpointer{0, 0, 0.5, 0}, &menuwin, Pipera::Pinpointer{0, 124, 0.5, 0});
+    Pipera::Canvas::alignWindow(&settingswin, Pipera::Pinpointer{0, 0, 0.5, 0}, &loadgamewin, Pipera::Pinpointer{0, 10, 0.5, 1});
+
+    SDL_Surface* quitsurf = loadimg("text_quit.bmp");
+    Pipera::ImageWidget quitimagewidget(quitsurf);
+    Pipera::FixedSizeContainer quitfsc(100, 15, &quitimagewidget);
+    Pipera::DecoratedContainer quitbtn(&quitfsc, red_button_decor, 15);
+    Pipera::OneWidgetWindow quitwin(&quitbtn);
+    Pipera::Canvas::addWindow(&quitwin);
+    Pipera::Canvas::alignWindow(&quitwin, Pipera::Pinpointer{0, 0, 0.5, 0}, &settingswin, Pipera::Pinpointer{0, 10, 0.5, 1});
 
 
 
